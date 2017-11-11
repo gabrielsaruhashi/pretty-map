@@ -1,17 +1,26 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native'
+
+
 
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
+    
+     <Button
+  onPress={logIn}
+  title="Facebook Login"
+  color="#841584"
+  accessibilityLabel="Learn more about this purple button"
+/>
+    
     );
   }
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -21,3 +30,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+async function logIn() {
+  const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('130142711018493', {
+      permissions: ['public_profile'],
+    });
+  if (type === 'success') {
+    // Get the user's name using Facebook's Graph API
+    const response = await fetch(
+      `https://graph.facebook.com/me?access_token=${token}`);
+    Alert.alert(
+      'Logged in!',
+      `Hi ${(await response.json()).name}!`,
+    );
+  }
+}
